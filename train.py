@@ -38,6 +38,6 @@ def train(location_name: str, enddate: str, missing: bool, lat: str, lng: str, c
     print("%s validation MAE per capacity by date: %.5f" % (location_name,nmae_2_date))
     print("Done.", flush=True)
     
-print(train('신인천소내','20200820',True,'37.4772','126.6249', 200))
-print(train('부산복합자재창고','20200924',False,'35.10468','129.0323', 115))
-print(train('부산신항','20200820',False,'35.10468','129.0332', 187))
+print(train('신인천소내','20200820',True,'37.4772','126.6249', 200))
+print(train('부산복합자재창고','20200924',False,'35.10468','129.0323', 115))
+print(train('부산신항','20200820',False,'35.10468','129.0332', 187))

@@ -10,7 +10,7 @@ from time import time
 from sklearn.model_selection import train_test_split
 
 def load_data(location_name: str, enddate: str, missing: bool, lat: str, lng: str):
-    data2 = pd.read_csv("./한국남부발전(주)_%s 태양광발전실적_%s.csv" % (location_name, enddate),encoding='CP949',index_col=0,parse_dates=True)
+    data2 = pd.read_csv("./한국남부발전(주)_%s 태양광발전실적_%s.csv" % (location_name, enddate),encoding='CP949',index_col=0,parse_dates=True)
     data2 = data2.loc[:'2019']
     preprocessed_data2 = data2[['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24']]
     preprocessed_data2.columns = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24']
@@ -70,6 +70,6 @@ if __name__ == '__main__':
     print("Data loaded start", flush=True)
     print("Data loaded done.", flush=True)
     
-# print(load_data('신인천소내','20200820',True,'37.4772','126.6249'))
-# print(load_data('부산복합자재창고','20200924',False,'35.10468','129.0323'))
-# print(load_data('부산신항','20200820',False,'35.10468','129.0323'))
+# print(load_data('신인천소내','20200820',True,'37.4772','126.6249'))
+# print(load_data('부산복합자재창고','20200924',False,'35.10468','129.0323'))
+# print(load_data('부산신항','20200820',False,'35.10468','129.0323'))
