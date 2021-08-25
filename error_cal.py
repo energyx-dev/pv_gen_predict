@@ -18,13 +18,16 @@ def error_cal(lat: str, lng: str, strSDate: str, strEDate: str, strOrgCd: str, p
     # measured = pd.read_csv('result_1/df_gens_%s_%s.csv' % (strOrgCd, (pd.to_datetime(strEDate)+time_delta).strftime('%Y-%m-%d')), index_col=0, parse_dates=True)
     # predicted = pd.read_csv('result_1/df_pred_%s_%s.csv' % (strOrgCd, (pd.to_datetime(strEDate)+time_delta).strftime('%Y-%m-%d')), index_col=0, parse_dates=True)
     # print(measured.index, predicted.index)
-    error = measured.loc[(pd.to_datetime(strSDate)+time_delta).strftime('%Y-%m-%d %H:%M:%S'):strEDate] - predicted.loc[(pd.to_datetime(strSDate)+time_delta).strftime('%Y-%m-%d %H:%M:%S'):strEDate]
+    error = predicted.loc[(pd.to_datetime(strSDate)+time_delta).strftime('%Y-%m-%d %H:%M:%S'):strEDate] - measured.loc[(pd.to_datetime(strSDate)+time_delta).strftime('%Y-%m-%d %H:%M:%S'):strEDate]
+    error = error.dropna()
     abserror = abs(error)
-    abserror_6h = abserror.resample('6H').sum()
-    abserror_1day = abserror.resample('D').sum()
+    abserror_6h = abserror.resample('6H').sum()/6
+    abserror_1day = abserror.resample('D').sum()/24
+    cumerror_1day = error.resample('D').sum()
     nmae = np.mean(abserror)/capacity
     nmae_6h = abserror_6h/capacity
     nmae_1d = abserror_1day/capacity
+    nce_1d = cumerror_1day/capacity
     
     nmae_hour = abserror.groupby(abserror.index.hour).mean()/capacity
     nmae_date = abserror.groupby(abserror.index.date).mean()/capacity
@@ -34,10 +37,11 @@ def error_cal(lat: str, lng: str, strSDate: str, strEDate: str, strOrgCd: str, p
     df_nmae_1d = pd.DataFrame(data=nmae_1d)
     df_nmae_hour = pd.DataFrame(data=nmae_hour)
     df_nmae_date = pd.DataFrame(data=nmae_date)
+    df_nce_1d = pd.DataFrame(data=nce_1d)
     
-    return df_nmae, df_nmae_6h, df_nmae_hour, df_nmae_1d, df_nmae_date
+    return df_nmae, df_nmae_6h, df_nmae_hour, df_nmae_1d, df_nmae_date, nce_1d
 
 
-# print(error_cal(37.4772, 126.6249, '2021-08-16', '2021-08-22', '876', '신인천소내', 200))
-# print(error_cal(35.10468, 129.0323, '2021-08-17', '2021-08-23', '997N', '부산복합자재창고',, 115)) 
-# print(error_cal(35.10468, 129.0323, '2021-08-17', '2021-08-23', '997G', '부산신항', 187)) 
+# print(error_cal(37.4772, 126.6249, '2021-08-16', '2021-08-22', '876', '신인천소내', 200))
+# print(error_cal(35.10468, 129.0323, '2021-08-17', '2021-08-23', '997N', '부산복합자재창고',, 115)) 
+# print(error_cal(35.10468, 129.0323, '2021-08-17', '2021-08-23', '997G', '부산신항', 187)) 
