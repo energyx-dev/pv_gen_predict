@@ -28,13 +28,13 @@ def test(strOrgCd : str, pred_strSDate: str, meas_strSDate: str, pred_strEDate: 
     plt.subplot(2, 1, 1)
     plt.plot(df_measure.loc[(pd.to_datetime(pred_strSDate)+time_delta).strftime('%Y-%m-%d'):].index, df_measure.loc[(pd.to_datetime(pred_strSDate)+time_delta).strftime('%Y-%m-%d'):].values, df_predict.loc[(pd.to_datetime(pred_strSDate)+time_delta).strftime('%Y-%m-%d'):].index, df_predict.loc[(pd.to_datetime(pred_strSDate)+time_delta).strftime('%Y-%m-%d'):].values)
     plt.plot(pd.to_datetime([today_mark, today_mark]), [0, capacity/3], 'r--')
-    plt.title('%s의 태양광 발전량' % location_name, fontsize=32, fontweight='heavy')
+    plt.title('%s의 태양광 발전량(%dkW)' % (location_name, capacity), fontsize=32, fontweight='heavy')
     plt.legend(['실제 발전량','예측 발전량'])
     
     plt.subplot(2, 3, 4)
     df_nmae_hour.plot.bar(ax=plt.gca())
     plt.title('시간별 평균절대오차', fontweight='heavy')
-    plt.legend(['NMAE(시간단위)'])
+    plt.legend(['MAE/capacity(시간단위)'])
     # plt.figure(figsize=(5,5))
     
     df_nmae_1d.index = df_nmae_1d.index.date
@@ -45,12 +45,12 @@ def test(strOrgCd : str, pred_strSDate: str, meas_strSDate: str, pred_strEDate: 
     plt.subplot(2, 3, 5)
     df_nmae_1d[:-1].plot.bar(ax=plt.gca(),color='gray')
     plt.title('일별 평균절대오차', fontweight='heavy')
-    plt.legend(['NMAE(시간단위)'])
+    plt.legend(['MAE/capacity(시간단위)'])
     
     plt.subplot(2, 3, 6)
     df_nce_1d[:-1].plot.bar(ax=plt.gca(),color='DarkRed')
     plt.title('일별 누적오차', fontweight='heavy')
-    plt.legend(['normalized error'])
+    plt.legend(['error/capacity'])
     
     # print(err_cal_day)
     plt.show()
@@ -59,10 +59,13 @@ def test(strOrgCd : str, pred_strSDate: str, meas_strSDate: str, pred_strEDate: 
     # print("총 조회시간 내의 설치용량 대 시간당 평균절대오차", err_cal_876[1])
     # print("총 조회시간 내의 설치용량 대 일당 평균절대오차", err_cal_876[2])
 if __name__ == '__main__':
-    pred_strSDate = '2021-08-19'
-    meas_strSDate = '20210819'
-    pred_strEDate = '2021-08-25'
-    meas_strEDate = '20210825'
+    now = datetime.now()
+    pred_strEDate = now.strftime("%Y-%m-%d") #'2021-08-26'
+    meas_strEDate = pred_strEDate.replace('-', '') # '20210826'
+    pred_strSDate = (now - timedelta(days=6)).strftime("%Y-%m-%d") # '2021-08-20'
+    meas_strSDate = pred_strSDate.replace('-', '') # '20210820'
+    print("Today: %s" % now)
+    
     if len(sys.argv) < 2:
         test('876', pred_strSDate, meas_strSDate, pred_strEDate, meas_strEDate, '신인천소내', 200, '37.4772', '126.6249')
         test('997N', pred_strSDate, meas_strSDate, pred_strEDate, meas_strEDate, '부산복합자재창고', 115, '35.10468', '129.0323')
