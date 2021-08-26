@@ -14,6 +14,7 @@ import sys
 
 def test(strOrgCd : str, pred_strSDate: str, meas_strSDate: str, pred_strEDate: str, meas_strEDate: str, location_name: str, capacity: float, lat: str, lng: str):
     time_delta = timedelta(days=1)
+    now = datetime.now()
     today_mark = pred_strEDate + ' 00:00:00+09:00'
     df_measure = measure.measure(meas_strSDate, meas_strEDate, strOrgCd)
     df_predict = predict.predict(lat, lng, location_name, strOrgCd, pred_strSDate, pred_strEDate)
@@ -29,6 +30,7 @@ def test(strOrgCd : str, pred_strSDate: str, meas_strSDate: str, pred_strEDate: 
     plt.plot(df_measure.loc[(pd.to_datetime(pred_strSDate)+time_delta).strftime('%Y-%m-%d'):].index, df_measure.loc[(pd.to_datetime(pred_strSDate)+time_delta).strftime('%Y-%m-%d'):].values, df_predict.loc[(pd.to_datetime(pred_strSDate)+time_delta).strftime('%Y-%m-%d'):].index, df_predict.loc[(pd.to_datetime(pred_strSDate)+time_delta).strftime('%Y-%m-%d'):].values)
     plt.plot(pd.to_datetime([today_mark, today_mark]), [0, capacity/3], 'r--')
     plt.title('%s의 태양광 발전량(%dkW)' % (location_name, capacity), fontsize=32, fontweight='heavy')
+    fig.suptitle('NOW: %s' % now.strftime("%Y-%m-%d %H:%M:%S"))
     plt.legend(['실제 발전량','예측 발전량'])
     
     plt.subplot(2, 3, 4)
